@@ -1,3 +1,4 @@
+//Nathaniel's file (currently doesn't function) -Doesn't move.
 //Robot for the java program "robocode"
 //Right now trying to get it to dodge bullets effectivly
 //The main movement is based off a method called surf, but advanced (or even basic sometimes) surfs are too complicated so I tried to sort of emulate it (to varrying degrees of success)
