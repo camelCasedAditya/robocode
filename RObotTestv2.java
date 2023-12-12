@@ -69,6 +69,7 @@ public class RObotTest extends Robot
 		do {
 			//Turns the radar right 
 			turnRadarRight(Double.POSITIVE_INFINITY);
+			ahead(2.0, 3);
 		} while (true);
 	}
 
@@ -94,8 +95,8 @@ public class RObotTest extends Robot
 			pattern.timeFired = getTime();
 			pattern.bulletVelocity = bulletVelocity(bulletPower);
 			pattern.distanceTraveled = bulletVelocity(bulletPower);
-			//pattern.bulletDirection = ((Integer)SafePositions.get(2)).intValue();
-			//pattern.bulletAngle = ((Double)bearing.get(2)).intValue();
+			//pattern.bulletDirection = 
+			//pattern.bulletAngle = 
 			pattern.fireLocation = (Point2D.Double)enemyLocation.clone();
 
 			enemyBulletPattern.add(pattern);
