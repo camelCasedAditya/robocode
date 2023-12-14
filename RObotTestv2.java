@@ -69,7 +69,7 @@ public class RObotTest extends Robot
 		do {
 			//Turns the radar right 
 			turnRadarRight(Double.POSITIVE_INFINITY);
-			ahead(2.0, 3);
+			//ahead(2.0, 3);
 		} while (true);
 	}
 
