@@ -16,7 +16,7 @@ import java.awt.Color;
 /**
  * RObotTest - a robot by (your name here)
  */
-public class RObotTest extends Robot
+public class RObotTestv2 extends AdvancedRobot
 {
 	
 	public Point2D.Double myLocation;	//Robot's location
@@ -196,7 +196,7 @@ public class RObotTest extends Robot
 		if (dodgePattern != null) {
 			return;
 		}
-		System.out.println(dodgePattern.fireLocation);
+		//System.out.println(dodgePattern.fireLocation);
 		double goAngle = absoluteBearing(dodgePattern.fireLocation, myLocation);
 	}
 	/**
