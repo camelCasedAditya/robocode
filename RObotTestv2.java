@@ -196,7 +196,7 @@ public class RObotTest extends Robot
 		if (dodgePattern != null) {
 			return;
 		}
-		
+		System.out.println(dodgePattern.fireLocation);
 		double goAngle = absoluteBearing(dodgePattern.fireLocation, myLocation);
 	}
 	/**
