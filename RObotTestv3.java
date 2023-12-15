@@ -17,7 +17,7 @@ import java.awt.Color;
 /**
  * RObotTest - a robot by (your name here)
  */
-public class RObotTestv2 extends AdvancedRobot
+public class RObotTestv3 extends AdvancedRobot
 {
 	
 	public Point2D.Double myLocation;	//Robot's location
