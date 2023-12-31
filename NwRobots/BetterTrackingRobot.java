@@ -31,7 +31,7 @@ import java.util.Scanner;
 
     public void onScannedRobot (ScannedRobotEvent event) {
         double absoluteBearing = event.getBearingRadians()+getHeadingRadians();
-        double lateralVelocity = event.getVelocity() * Math.sin(event.getHeadingRadians() - absoluteBearing);
+        double lateralVelocity = event.getVelocity() * Math.sin(event.getHeadingRadians() - absoluteBearing); 
         double gunTurnAmount;
 
         setTurnRadarLeftRadians(getRadarTurnRemainingRadians());
