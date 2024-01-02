@@ -6,6 +6,7 @@
 //Code inspired by bots made by https://robowiki.net/wiki/User:Voidious
 //The same sort of method is used for targeting the enemy (albeit to a simpler degree)
 import robocode.*;
+import java.awt.*;
 import robocode.util.Utils;
 import java.awt.geom.*;     // for Point2D's (java x,y coordinates)
 import java.util.ArrayList;
@@ -56,6 +57,14 @@ public class DodgeRobot extends AdvancedRobot {
 
     //Inistialize all the things
     public void run() {
+
+        //Set colors 
+        setBodyColor(new Color(128, 50, 50));
+		setGunColor(new Color(200, 30, 20));
+		setRadarColor(new Color(150, 40, 70));
+		setScanColor(Color.white);
+		setBulletColor(Color.blue);
+
         opponentWaves = new ArrayList();
         surfDirections = new ArrayList();
         //absolute bearings of the surve (absolute bearings are the headings+bearings)
@@ -75,6 +84,9 @@ public class DodgeRobot extends AdvancedRobot {
 
     //When the scanner finds an enemy robot (impliment it not being a team member later)
     public void onScannedRobot(ScannedRobotEvent event) {
+        /* if (isTeammate(event.getName())) {
+            return;
+        } */
         //Find my location
         myLocation = new Point2D.Double(getX(), getY());
 
@@ -277,7 +289,9 @@ public class DodgeRobot extends AdvancedRobot {
 
     //When the robot is hit by a bullet (FIX to make only enemy bullets that hit the robot)
     public void onHitByBullet(HitByBulletEvent event) {
-        
+        /* if (isTeammate(event.getName())) {
+            return;
+        } */
         // Get the name of the enemy that hit us
         String enemyName = event.getBullet().getName();
 
@@ -562,3 +576,9 @@ public class DodgeRobot extends AdvancedRobot {
         }
     }
 }
+
+//Improvements:
+/*
+ * Keep Distance
+ * 
+ */
