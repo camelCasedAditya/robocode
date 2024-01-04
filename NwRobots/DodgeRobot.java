@@ -230,10 +230,11 @@ public class DodgeRobot extends AdvancedRobot {
             }
         }
     }
-
+    /* 
     //Gets the closest surfable wave
     //Find the closets wave that hasn't passed the robot and returns it to the movement data/algorithm
-    public EnemyWave getClosestSurfableWave() {
+    // TO IMPROVE: CHANGE TO FIRST WAVE (that hit the robot) ISTEAD OF CLOSEST WAVE
+     public EnemyWave getClosestSurfableWave() {
         double closestDistance = 50000; // use some big number here
         EnemyWave surfWave = null; //The wave we are surfing
 
@@ -241,7 +242,7 @@ public class DodgeRobot extends AdvancedRobot {
             EnemyWave ew = (EnemyWave)opponentWaves.get(x); //Get the wave
             double distance = myLocation.distance(ew.fireLocation) //Get the distance from the robot to the wave
                 - ew.distanceTraveled;
-
+                
                 //If the distance is greater than the bullet velocity and less than the closest distance (so it is the closest wave)
                 //(note that depending on a bullet's velocity and the position of the robot it could technically still hit the robot because of how Robocode game physics work 
                 // (bullets will advance by velocity one more time before checking collisions). //However it is unlikely.
@@ -253,7 +254,19 @@ public class DodgeRobot extends AdvancedRobot {
         }
 
         return surfWave;
-    }
+    } */
+    
+    
+    //Testing for first wave that hit the robot not the closest (TEST FURTHER)
+    public EnemyWave getClosestSurfableWave() {
+        EnemyWave surfWave = null; //The wave we are surfing
+        EnemyWave ew = (EnemyWave)opponentWaves.get(0); //Get the wave
+        surfWave = ew;
+        
+    
+
+        return surfWave;
+    }  
 
     // Given the EnemyWave that the bullet was on, and the point where we were hit, calculate the index into the stat array for that factor.
     public static int getFactorIndex(EnemyWave ew, Point2D.Double targetLocation) {
@@ -300,6 +313,50 @@ public class DodgeRobot extends AdvancedRobot {
         //updateDodging(enemyName);
     
 
+
+        //If the opponent collection isn't empty...
+        // (If the opponent collection is empty, we must have missed the detection of the wave somehow.)
+        if (!opponentWaves.isEmpty()) {
+            // Get the point where we were hit
+            Point2D.Double hitBulletLocation = new Point2D.Double(
+                event.getBullet().getX(), event.getBullet().getY());
+            //initialize a new enemywave (hitwave) (set to null for now)
+            EnemyWave hitWave = null;
+
+            // look through the EnemyWaves, and find one that could've hit us.
+            for (int x = 0; x < opponentWaves.size(); x++) {
+                //Get the wave
+                EnemyWave ew = (EnemyWave)opponentWaves.get(x);
+
+                //If the distance it has traveled is within 50 units of our current distance from the source of the wave
+                //and the velocity is the same (within 0.001 units) as the bullet that hit us...
+                if (Math.abs(ew.distanceTraveled -
+                    myLocation.distance(ew.fireLocation)) < 50
+                    && Math.abs(bulletVelocity(event.getBullet().getPower()) 
+                        - ew.bulletVelocity) < 0.001) {
+                    //Set hit wave to the current wave we are looking at
+                    hitWave = ew;
+                    break;  //The current enemy wave is the one that hit us, so we can stop looking for the wave that hit us.
+                }
+            }
+            //If the hit wave isn't null (if we found a wave that hit us)
+            if (hitWave != null) {
+                //Update surf stats array
+                logHit(hitWave, hitBulletLocation);
+                
+                // Remove that wave
+                opponentWaves.remove(opponentWaves.lastIndexOf(hitWave));
+            }
+        }
+    }
+
+    public void onBulletHitBullet(BulletHitBulletEvent event) {
+        //Do basically the same thing as on hitbybullet as this is just more data to be collected
+        /* if (isTeammate(event.getName())) {
+            return;
+        } */
+        // Get the name of the enemy that hit us
+        String enemyName = event.getBullet().getName();
 
         //If the opponent collection isn't empty...
         // (If the opponent collection is empty, we must have missed the detection of the wave somehow.)
@@ -452,6 +509,21 @@ public class DodgeRobot extends AdvancedRobot {
         setBackAsFront(this, goAngle);
     }
 
+    public void onHitRobot(HitRobotEvent event) {
+        
+        EnemyWave surfWave = getClosestSurfableWave();
+
+        double dangerLeft = checkDanger(surfWave, -1); //Checking danger (same code as above)(testing)
+        double dangerRight = checkDanger(surfWave, 1);
+
+        if (dangerLeft < dangerRight) { //Basically if the robot collides with another robot (where it becomes useless) it makes sure robot will orbit in a direction away  
+                                        //(uses basically the same code fomr doSurfing)
+        wallSmoothing(enemyLocation, A_LITTLE_LESS_THAN_HALF_PI, -1);
+        } else {
+            wallSmoothing(enemyLocation, A_LITTLE_LESS_THAN_HALF_PI, 1);         
+        }
+    }
+
     
      
    
@@ -577,8 +649,10 @@ public class DodgeRobot extends AdvancedRobot {
     }
 }
 
-//Improvements:
+//Improvements ideas:
 /*
- * Keep Distance
- * 
+ * Keep Distance?
+ * Add logic to keep still if that would be better
+ * Add onBulletHitBullet logic
+ * choose the wave that hit the robot first instead of a close one
  */
