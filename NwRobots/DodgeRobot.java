@@ -528,16 +528,18 @@ public class DodgeRobot extends TeamRobot {
         if (dangerLeft < dangerRight) { //Basically if the robot collides with another robot (where it becomes useless) it makes sure robot will orbit in a direction away  
                                         //(uses basically the same code fomr doSurfing)
             if (getVelocity() < .2) { //In case it is stuck and hitting a wall (if it basically stops)
-                wallSmoothing(enemyLocation, A_LITTLE_LESS_THAN_HALF_PI, -1); 
+                wallSmoothing(myLocation, A_LITTLE_LESS_THAN_HALF_PI, -1); 
             } else {
-                wallSmoothing(enemyLocation, A_LITTLE_LESS_THAN_HALF_PI, 1); 
+                back(5);
+                wallSmoothing(myLocation, A_LITTLE_LESS_THAN_HALF_PI, 1); 
             }
 
         } else {
             if (getVelocity() < .2) { //In case it gets stuck next to a wall
-                wallSmoothing(enemyLocation, A_LITTLE_LESS_THAN_HALF_PI, 1);
+                wallSmoothing(myLocation, A_LITTLE_LESS_THAN_HALF_PI, 1);
             } else {
-                wallSmoothing(enemyLocation, A_LITTLE_LESS_THAN_HALF_PI, -1); 
+                back(5);
+                wallSmoothing(myLocation, A_LITTLE_LESS_THAN_HALF_PI, -1); 
             }        
         }
     }
