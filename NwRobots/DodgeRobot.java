@@ -200,12 +200,20 @@ public class DodgeRobot extends TeamRobot {
 		double angleOffset = direction * guessfactor * newWave.gunMaxEscapeAngle(); 
                 double gunAdjust = Utils.normalRelativeAngle(
                         absoluteBearing - getGunHeadingRadians() + angleOffset);
+
+                if (event.getEnergy() == 0) { //If the robot is disabled (this fixes the tracking breaking when a robot becomes disabled)
+                    gunAdjust = robocode.util.Utils.normalRelativeAngle(absoluteBearing - getGunHeadingRadians()+lateralVelocity / 15);
+                    setTurnGunRightRadians(gunAdjust);
+		            setFireBullet(power);
+                } else {
+
                 setTurnGunRightRadians(gunAdjust);
                 //Prevent the robot from firing if the gun has to adjust more than half a robot turn (9 pixels laterally)
                 if (getGunHeat() == 0 && gunAdjust < Math.atan2(9, event.getDistance())) {
                         setFireBullet(power);
                         bulletWaves.add(newWave);
                 }  
+            }
         }
     }
 	
