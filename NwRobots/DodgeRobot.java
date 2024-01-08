@@ -256,6 +256,17 @@ public class DodgeRobot extends TeamRobot {
         return surfWave;
     } 
     
+    /* 
+    //Gets the first wave that will hit the robot
+    public EnemyWave getFirstSurfableWave() {
+        double earliestTime = Double.POSITIVE_INFINITY;
+        EnemyWave surfWave = null;
+
+        for (int x = 0; x < opponentWaves.size(); x++) {
+            EnemyWave ew = (EnemyWave)opponentWaves.get(x);
+
+        }
+    } */
     
 
     // Given the EnemyWave that the bullet was on, and the point where we were hit, calculate the index into the stat array for that factor.
@@ -292,9 +303,9 @@ public class DodgeRobot extends TeamRobot {
 
     //When the robot is hit by a bullet (FIX to make only enemy bullets that hit the robot)
     public void onHitByBullet(HitByBulletEvent event) {
-        /* if (isTeammate(event.getName())) {
+         if (isTeammate(event.getBullet().getName())) {
             return;
-        } */
+        } 
         // Get the name of the enemy that hit us
         String enemyName = event.getBullet().getName();
 
@@ -342,7 +353,7 @@ public class DodgeRobot extends TeamRobot {
 
     public void onBulletHitBullet(BulletHitBulletEvent event) {
         //Do basically the same thing as on hitbybullet as this is just more data to be collected
-         if (isTeammate(event.getName())) {
+         if (isTeammate(event.getBullet().getName())) {
             return;
         } 
         // Get the name of the enemy that hit us
@@ -503,14 +514,23 @@ public class DodgeRobot extends TeamRobot {
         
         EnemyWave surfWave = getClosestSurfableWave();
 
-        double dangerLeft = checkDanger(surfWave, -1); //Checking danger (same code as above)(testing)
+        double dangerLeft = checkDanger(surfWave, -1); //Checking danger (same code as above)
         double dangerRight = checkDanger(surfWave, 1);
 
         if (dangerLeft < dangerRight) { //Basically if the robot collides with another robot (where it becomes useless) it makes sure robot will orbit in a direction away  
                                         //(uses basically the same code fomr doSurfing)
-        wallSmoothing(enemyLocation, A_LITTLE_LESS_THAN_HALF_PI, -1);
+            if (getVelocity() < .2) { //In case it is stuck and hitting a wall (if it basically stops)
+                wallSmoothing(enemyLocation, A_LITTLE_LESS_THAN_HALF_PI, -1); 
+            } else {
+                wallSmoothing(enemyLocation, A_LITTLE_LESS_THAN_HALF_PI, 1); 
+            }
+
         } else {
-            wallSmoothing(enemyLocation, A_LITTLE_LESS_THAN_HALF_PI, 1);         
+            if (getVelocity() < .2) { //In case it gets stuck next to a wall
+                wallSmoothing(enemyLocation, A_LITTLE_LESS_THAN_HALF_PI, 1);
+            } else {
+                wallSmoothing(enemyLocation, A_LITTLE_LESS_THAN_HALF_PI, -1); 
+            }        
         }
     }
 
