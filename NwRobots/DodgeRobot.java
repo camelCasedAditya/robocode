@@ -14,7 +14,7 @@ import java.util.List;
 
 //Api help: https://robocode.sourceforge.io/docs/robocode
 
-public class DodgeRobot extends AdvancedRobot {
+public class DodgeRobot extends TeamRobot {
     public static int BINS = 47;
     public static double surfStats[] = new double[BINS];
     public Point2D.Double myLocation;     // our bot's location
@@ -84,9 +84,9 @@ public class DodgeRobot extends AdvancedRobot {
 
     //When the scanner finds an enemy robot (impliment it not being a team member later)
     public void onScannedRobot(ScannedRobotEvent event) {
-        /* if (isTeammate(event.getName())) {
+         if (isTeammate(event.getName())) {
             return;
-        } */
+        }
         //Find my location
         myLocation = new Point2D.Double(getX(), getY());
 
@@ -230,10 +230,10 @@ public class DodgeRobot extends AdvancedRobot {
             }
         }
     }
-    /* 
+    
     //Gets the closest surfable wave
     //Find the closets wave that hasn't passed the robot and returns it to the movement data/algorithm
-    // TO IMPROVE: CHANGE TO FIRST WAVE (that hit the robot) ISTEAD OF CLOSEST WAVE
+    // TO IMPROVE: CHANGE TO FIRST WAVE (that will hit the robot) ISTEAD OF CLOSEST WAVE
      public EnemyWave getClosestSurfableWave() {
         double closestDistance = 50000; // use some big number here
         EnemyWave surfWave = null; //The wave we are surfing
@@ -254,19 +254,9 @@ public class DodgeRobot extends AdvancedRobot {
         }
 
         return surfWave;
-    } */
+    } 
     
     
-    //Testing for first wave that hit the robot not the closest (TEST FURTHER)
-    public EnemyWave getClosestSurfableWave() {
-        EnemyWave surfWave = null; //The wave we are surfing
-        EnemyWave ew = (EnemyWave)opponentWaves.get(0); //Get the wave
-        surfWave = ew;
-        
-    
-
-        return surfWave;
-    }  
 
     // Given the EnemyWave that the bullet was on, and the point where we were hit, calculate the index into the stat array for that factor.
     public static int getFactorIndex(EnemyWave ew, Point2D.Double targetLocation) {
@@ -352,9 +342,9 @@ public class DodgeRobot extends AdvancedRobot {
 
     public void onBulletHitBullet(BulletHitBulletEvent event) {
         //Do basically the same thing as on hitbybullet as this is just more data to be collected
-        /* if (isTeammate(event.getName())) {
+         if (isTeammate(event.getName())) {
             return;
-        } */
+        } 
         // Get the name of the enemy that hit us
         String enemyName = event.getBullet().getName();
 
