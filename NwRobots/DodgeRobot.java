@@ -203,7 +203,7 @@ public class DodgeRobot extends TeamRobot {
                         absoluteBearing - getGunHeadingRadians() + angleOffset);
 
                 if (event.getEnergy() == 0) { //If the robot is disabled (this fixes the tracking breaking when a robot becomes disabled)
-                    gunAdjust = robocode.util.Utils.normalRelativeAngle(absoluteBearing - getGunHeadingRadians()+lateralVelocity / 15);
+                    gunAdjust = robocode.util.Utils.normalRelativeAngle(absoluteBearing - getGunHeadingRadians()+lateralVelocity / 22);
                     setTurnGunRightRadians(gunAdjust);
 		            setFireBullet(power);
                 } else {
@@ -506,7 +506,7 @@ public class DodgeRobot extends TeamRobot {
     //Check the orbit direction which is safest 
     //(clockwise: 1, counter clockwise: -1)
     public void doSurfing() {
-        EnemyWave surfWave = getFirstSurfableWave();
+        EnemyWave surfWave = getClosestSurfableWave();
 
         if (surfWave == null) { return; }
 
@@ -526,7 +526,7 @@ public class DodgeRobot extends TeamRobot {
     }
 
     public void onHitRobot(HitRobotEvent event) {
-        EnemyWave surfWave = getFirstSurfableWave();
+        EnemyWave surfWave = getClosestSurfableWave();
 
         double dangerLeft = checkDanger(surfWave, -1); //Checking danger (same code as above)
         double dangerRight = checkDanger(surfWave, 1);
