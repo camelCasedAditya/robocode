@@ -526,28 +526,27 @@ public class DodgeRobot extends TeamRobot {
     }
 
     public void onHitRobot(HitRobotEvent event) {
-        
         EnemyWave surfWave = getFirstSurfableWave();
 
         double dangerLeft = checkDanger(surfWave, -1); //Checking danger (same code as above)
         double dangerRight = checkDanger(surfWave, 1);
 
-        if (dangerLeft < dangerRight) { //Basically if the robot collides with another robot (where it becomes useless) it makes sure robot will orbit in a direction away  
-                                        //(uses basically the same code fomr doSurfing)
-            if (getVelocity() < .2) { //In case it is stuck and hitting a wall (if it basically stops)
-                wallSmoothing(myLocation, A_LITTLE_LESS_THAN_HALF_PI, -1); 
-            } else {
-                back(5);
-                wallSmoothing(myLocation, A_LITTLE_LESS_THAN_HALF_PI, 1); 
-            }
-
+        if (dangerLeft < dangerRight) { // If the robot collides with another robot, orbit in a direction away
+            wallSmoothing(myLocation, A_LITTLE_LESS_THAN_HALF_PI, 1);
+            if (getVelocity() < 0.2) { // If velocity is less than 0.2, go backwards
+                setBack(5);
+                if (getVelocity() < 0.2) { // If velocity is still less than 0.2 after moving back, go ahead
+                    setAhead(5);
+                }
+            } 
         } else {
-            if (getVelocity() < .2) { //In case it gets stuck next to a wall
-                wallSmoothing(myLocation, A_LITTLE_LESS_THAN_HALF_PI, 1);
-            } else {
-                back(5);
-                wallSmoothing(myLocation, A_LITTLE_LESS_THAN_HALF_PI, -1); 
-            }        
+            wallSmoothing(myLocation, A_LITTLE_LESS_THAN_HALF_PI, -1);
+            if (getVelocity() < 0.2) { // If velocity is less than 0.2, go backwards
+                setBack(5);
+                if (getVelocity() < 0.2) { // If velocity is still less than 0.2 after moving back, go ahead
+                    setAhead(5);
+                }
+            }
         }
     }
 
