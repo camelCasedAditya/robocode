@@ -151,6 +151,7 @@ public class DodgeRobot extends AdvancedRobot {
         
         // gun code would go here (add firing and stuff? Gun go br)(this was added later so it's not really connected to the other code)
         //This is kinda rough gun code but it works? (I think) //This code was inspired by user Kawigi's (https://robowiki.net/wiki/User:Kawigi) GuessFactorTargetingBots 
+        //Would improve and add things from the dodge cod if had mroe time
         // find enemy's location:
 		double enemyX = getX() + Math.sin(absoluteBearing) * event.getDistance();
 		double enemyY = getY() + Math.cos(absoluteBearing) * event.getDistance(); 
@@ -230,7 +231,7 @@ public class DodgeRobot extends AdvancedRobot {
             }
         }
     }
-    /* 
+    
     //Gets the closest surfable wave
     //Find the closets wave that hasn't passed the robot and returns it to the movement data/algorithm
     // TO IMPROVE: CHANGE TO FIRST WAVE (that hit the robot) ISTEAD OF CLOSEST WAVE
@@ -254,20 +255,27 @@ public class DodgeRobot extends AdvancedRobot {
         }
 
         return surfWave;
-    } */
+    } 
     
-    
-    //Testing for first wave that hit the robot not the closest (TEST FURTHER)
-    public EnemyWave getClosestSurfableWave() {
-        EnemyWave surfWave = null; //The wave we are surfing
-        EnemyWave ew = (EnemyWave)opponentWaves.get(0); //Get the wave
-        surfWave = ew;
-        
-    
+    //TESTING TO GET THE WAVE THAT WILL HIT THE ROBOT FIRST
+     //Gets the wave that will hit the robot first
+    public EnemyWave getFirstSurfableWave() {
+        double earliestHitTime = Double.POSITIVE_INFINITY; // use positive infinity as the initial earliest hit time
+        EnemyWave surfWave = null; //The wave that will hit the robot first
 
+        for (int x = 0; x < opponentWaves.size(); x++) {
+            EnemyWave ew = (EnemyWave)opponentWaves.get(x); //Get the wave
+            double hitTime = getTime() + (myLocation.distance(ew.fireLocation) - ew.distanceTraveled) / ew.bulletVelocity; //Calculate the estimated hit time
+
+            if (hitTime < earliestHitTime) { //If the hit time is earlier than the current earliest hit time
+                surfWave = ew; //Set the surf wave to the wave that will hit the robot first
+                earliestHitTime = hitTime;
+            }
+        }
         return surfWave;
-    }  
+    }
 
+    
     // Given the EnemyWave that the bullet was on, and the point where we were hit, calculate the index into the stat array for that factor.
     public static int getFactorIndex(EnemyWave ew, Point2D.Double targetLocation) {
         double offsetAngle = (absoluteBearing(ew.fireLocation, targetLocation)  - ew.directAngle); //Calculates the offset angle 
@@ -490,7 +498,7 @@ public class DodgeRobot extends AdvancedRobot {
     //Check the orbit direction which is safest 
     //(clockwise: 1, counter clockwise: -1)
     public void doSurfing() {
-        EnemyWave surfWave = getClosestSurfableWave();
+        EnemyWave surfWave = getFirstSurfableWave();
 
         if (surfWave == null) { return; }
 
@@ -511,7 +519,7 @@ public class DodgeRobot extends AdvancedRobot {
 
     public void onHitRobot(HitRobotEvent event) {
         
-        EnemyWave surfWave = getClosestSurfableWave();
+        EnemyWave surfWave = getFirstSurfableWave();
 
         double dangerLeft = checkDanger(surfWave, -1); //Checking danger (same code as above)(testing)
         double dangerRight = checkDanger(surfWave, 1);
