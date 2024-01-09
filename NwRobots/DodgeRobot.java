@@ -14,7 +14,7 @@ import java.util.List;
 
 //Api help: https://robocode.sourceforge.io/docs/robocode
 
-public class DodgeRobot extends AdvancedRobot {
+public class DodgeRobot extends TeamRobot {
     public static int BINS = 47;
     public static double surfStats[] = new double[BINS];
     public Point2D.Double myLocation;     // our bot's location
@@ -84,9 +84,9 @@ public class DodgeRobot extends AdvancedRobot {
 
     //When the scanner finds an enemy robot (impliment it not being a team member later)
     public void onScannedRobot(ScannedRobotEvent event) {
-        /* if (isTeammate(event.getName())) {
+         if (isTeammate(event.getName())) {
             return;
-        } */
+        }
         //Find my location
         myLocation = new Point2D.Double(getX(), getY());
 
@@ -201,12 +201,20 @@ public class DodgeRobot extends AdvancedRobot {
 		double angleOffset = direction * guessfactor * newWave.gunMaxEscapeAngle(); 
                 double gunAdjust = Utils.normalRelativeAngle(
                         absoluteBearing - getGunHeadingRadians() + angleOffset);
+
+                if (event.getEnergy() == 0) { //If the robot is disabled (this fixes the tracking breaking when a robot becomes disabled)
+                    gunAdjust = robocode.util.Utils.normalRelativeAngle(absoluteBearing - getGunHeadingRadians()+lateralVelocity / 15);
+                    setTurnGunRightRadians(gunAdjust);
+		            setFireBullet(power);
+                } else {
+
                 setTurnGunRightRadians(gunAdjust);
                 //Prevent the robot from firing if the gun has to adjust more than half a robot turn (9 pixels laterally)
                 if (getGunHeat() == 0 && gunAdjust < Math.atan2(9, event.getDistance())) {
                         setFireBullet(power);
                         bulletWaves.add(newWave);
                 }  
+            }
         }
     }
 	
@@ -234,7 +242,7 @@ public class DodgeRobot extends AdvancedRobot {
     
     //Gets the closest surfable wave
     //Find the closets wave that hasn't passed the robot and returns it to the movement data/algorithm
-    // TO IMPROVE: CHANGE TO FIRST WAVE (that hit the robot) ISTEAD OF CLOSEST WAVE
+    // TO IMPROVE: CHANGE TO FIRST WAVE (that will hit the robot) ISTEAD OF CLOSEST WAVE
      public EnemyWave getClosestSurfableWave() {
         double closestDistance = 50000; // use some big number here
         EnemyWave surfWave = null; //The wave we are surfing
@@ -310,9 +318,9 @@ public class DodgeRobot extends AdvancedRobot {
 
     //When the robot is hit by a bullet (FIX to make only enemy bullets that hit the robot)
     public void onHitByBullet(HitByBulletEvent event) {
-        /* if (isTeammate(event.getName())) {
+         if (isTeammate(event.getBullet().getName())) {
             return;
-        } */
+        } 
         // Get the name of the enemy that hit us
         String enemyName = event.getBullet().getName();
 
@@ -360,9 +368,9 @@ public class DodgeRobot extends AdvancedRobot {
 
     public void onBulletHitBullet(BulletHitBulletEvent event) {
         //Do basically the same thing as on hitbybullet as this is just more data to be collected
-        /* if (isTeammate(event.getName())) {
+         if (isTeammate(event.getBullet().getName())) {
             return;
-        } */
+        } 
         // Get the name of the enemy that hit us
         String enemyName = event.getBullet().getName();
 
@@ -521,14 +529,25 @@ public class DodgeRobot extends AdvancedRobot {
         
         EnemyWave surfWave = getFirstSurfableWave();
 
-        double dangerLeft = checkDanger(surfWave, -1); //Checking danger (same code as above)(testing)
+        double dangerLeft = checkDanger(surfWave, -1); //Checking danger (same code as above)
         double dangerRight = checkDanger(surfWave, 1);
 
         if (dangerLeft < dangerRight) { //Basically if the robot collides with another robot (where it becomes useless) it makes sure robot will orbit in a direction away  
                                         //(uses basically the same code fomr doSurfing)
-        wallSmoothing(enemyLocation, A_LITTLE_LESS_THAN_HALF_PI, -1);
+            if (getVelocity() < .2) { //In case it is stuck and hitting a wall (if it basically stops)
+                wallSmoothing(myLocation, A_LITTLE_LESS_THAN_HALF_PI, -1); 
+            } else {
+                back(5);
+                wallSmoothing(myLocation, A_LITTLE_LESS_THAN_HALF_PI, 1); 
+            }
+
         } else {
-            wallSmoothing(enemyLocation, A_LITTLE_LESS_THAN_HALF_PI, 1);         
+            if (getVelocity() < .2) { //In case it gets stuck next to a wall
+                wallSmoothing(myLocation, A_LITTLE_LESS_THAN_HALF_PI, 1);
+            } else {
+                back(5);
+                wallSmoothing(myLocation, A_LITTLE_LESS_THAN_HALF_PI, -1); 
+            }        
         }
     }
 
