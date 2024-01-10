@@ -1,3 +1,7 @@
+/*
+* Nathaniel Wu
+* 1/10/2024
+*/
 //Robot for the java program "robocode"
 //Right now trying to get it to dodge bullets effectivly
 //The main movement is based off a method called surf (it was invented by user ABC - https://robowiki.net/wiki/User:ABC), but advanced (or even basic sometimes) surfs are too complicated so I tried to sort of emulate it (to varrying degrees of success)
@@ -59,11 +63,7 @@ public class DodgeRobot extends TeamRobot {
     public void run() {
 
         //Set colors 
-        setBodyColor(new Color(128, 50, 50));
-		setGunColor(new Color(200, 30, 20));
-		setRadarColor(new Color(150, 40, 70));
-		setScanColor(Color.white);
-		setBulletColor(Color.blue);
+        setColors(Color.blue, Color.orange, Color.green);
 
         opponentWaves = new ArrayList();
         surfDirections = new ArrayList();
@@ -533,18 +533,18 @@ public class DodgeRobot extends TeamRobot {
 
         if (dangerLeft < dangerRight) { // If the robot collides with another robot, orbit in a direction away
             wallSmoothing(myLocation, A_LITTLE_LESS_THAN_HALF_PI, 1);
-            if (getVelocity() < 0.2) { // If velocity is less than 0.2, go backwards
-                setBack(5);
-                if (getVelocity() < 0.2) { // If velocity is still less than 0.2 after moving back, go ahead
-                    setAhead(5);
+            if (getVelocity() == 0) { //If the robot is just stopped for some reason
+                back(10);
+                if (getVelocity() == 0) { // If velocity is still 0 go ahead
+                    ahead(10);
                 }
             } 
         } else {
             wallSmoothing(myLocation, A_LITTLE_LESS_THAN_HALF_PI, -1);
-            if (getVelocity() < 0.2) { // If velocity is less than 0.2, go backwards
-                setBack(5);
-                if (getVelocity() < 0.2) { // If velocity is still less than 0.2 after moving back, go ahead
-                    setAhead(5);
+            if (getVelocity() == 0) { 
+                back(10);
+                if (getVelocity() == 0) { // If velocity is still 0 go ahead
+                    ahead(10);
                 }
             }
         }
